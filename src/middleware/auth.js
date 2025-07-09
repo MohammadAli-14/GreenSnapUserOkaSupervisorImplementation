@@ -57,3 +57,9 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Authentication failed. Please login again.", 401));
   }
 });
+export const isSupervisor = (req, res, next) => {
+  if (req.user.role !== 'supervisor') {
+    return next(new ErrorHandler("Unauthorized access", 403));
+  }
+  next();
+};

@@ -71,8 +71,14 @@ const userSchema = new mongoose.Schema({
   type: Boolean,
   default: false
 },
+role: {
+  type: String,
+  enum: ['user', 'supervisor'],
+  default: 'user'
+},
   resetPasswordVerifiedExpires: Date
-}, {
+},
+ {
   timestamps: true
 });
 

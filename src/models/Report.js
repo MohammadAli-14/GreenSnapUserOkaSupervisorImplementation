@@ -53,6 +53,29 @@
       enum: ['standard', 'hazardous', 'large'],
       default: 'standard'
     },
+    status: {
+  type: String,
+  enum: ['pending', 'resolved', 'out-of-scope'],
+  default: 'pending'
+},
+resolvedBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User"
+},
+resolvedAt: Date,
+resolutionImage: String,
+resolutionPublicId: String,
+resolutionLocation: {
+  type: {
+    type: String,
+    enum: ['Point'],
+    required: true
+  },
+  coordinates: {
+    type: [Number],
+    required: true
+  }
+}
   }, {
     timestamps: true
   });
