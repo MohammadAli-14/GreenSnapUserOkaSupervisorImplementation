@@ -58,9 +58,11 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
   }
 });
 export const isSupervisor = (req, res, next) => {
-  // Use decoded role from token
   if (req.user.role !== 'supervisor') {
-    return next(new ErrorHandler("Unauthorized access", 403));
+    return res.status(403).json({
+      success: false,
+      message: "Unauthorized supervisor access"
+    });
   }
   next();
 };

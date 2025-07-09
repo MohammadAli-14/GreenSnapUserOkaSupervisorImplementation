@@ -271,6 +271,35 @@ export const login = catchAsyncError(async (req, res, next) => {
   sendToken(user, 200, "User logged in successfully.", res);
 });
 
+export const supervisorLogin = catchAsyncError(async (req, res, next) => {
+  const { email, password } = req.body;
+  
+  // Validate input
+  if (!email || !password) {
+    return next(new ErrorHandler("Email and password are required.", 400));
+  }
+  
+  // Find supervisor user with verified account
+  const user = await User.findOne({ 
+    email, 
+    accountVerified: true,
+    role: 'supervisor' // Only supervisors
+  }).select("+password");
+  
+  if (!user) {
+    return next(new ErrorHandler("Invalid supervisor credentials", 401));
+  }
+  
+  // Verify password
+  const isPasswordMatched = await user.comparePassword(password);
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid supervisor credentials", 401));
+  }
+  
+  // Send authentication token
+  sendToken(user, 200, "Supervisor logged in successfully.", res);
+});
+
 export const logout = catchAsyncError(async (req, res, next) => {
   // Clear token from response
   res

@@ -120,7 +120,7 @@ userSchema.methods.generateToken = function() {
       userId: this._id,
       verified: this.accountVerified,
       tokenVersion: this.tokenVersion,
-      role: this.role  // Added role to token payload
+      role: this.role  // Make sure this is included
     },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRE }
