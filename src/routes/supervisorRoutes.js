@@ -5,21 +5,40 @@ import cloudinary from '../lib/cloudinary.js';
 
 const router = express.Router();
 
-// Get pending reports
+// Standardized to plural "reports"
 router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
   try {
-    const reports = await Report.find({ status: 'pending' })
+    const { status } = req.query;
+    const filter = status ? { status } : { status: 'pending' };
+    
+    const reports = await Report.find(filter)
       .populate('user', 'username profileImage')
       .sort({ createdAt: -1 });
     
     res.status(200).json(reports);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch reports" });
+    res.status(500).json({ message: "Failed to fetch reports", error: error.message });
   }
 });
 
-// Resolve report
-router.put('/report/:id/resolve', isAuthenticated, isSupervisor, async (req, res) => {
+// Updated to plural path
+router.get('/reports/:id', isAuthenticated, isSupervisor, async (req, res) => {
+  try {
+    const report = await Report.findById(req.params.id)
+      .populate('user', 'username profileImage');
+      
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+    
+    res.status(200).json(report);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch report", error: error.message });
+  }
+});
+
+// Updated to plural path
+router.put('/reports/:id/resolve', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     const { image, location, status } = req.body;
     const reportId = req.params.id;
@@ -44,7 +63,10 @@ router.put('/report/:id/resolve', isAuthenticated, isSupervisor, async (req, res
     
     res.status(200).json(updatedReport);
   } catch (error) {
-    res.status(500).json({ message: "Failed to resolve report" });
+    res.status(500).json({ 
+      message: "Failed to resolve report", 
+      error: error.message 
+    });
   }
 });
 

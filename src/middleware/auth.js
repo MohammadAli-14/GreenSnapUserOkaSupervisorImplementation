@@ -57,6 +57,7 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Authentication failed. Please login again.", 401));
   }
 });
+// Update isSupervisor middleware
 export const isSupervisor = (req, res, next) => {
   if (req.user.role !== 'supervisor') {
     return res.status(403).json({
