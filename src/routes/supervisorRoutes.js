@@ -6,7 +6,7 @@ import cloudinary from '../lib/cloudinary.js';
 const router = express.Router();
 
 // Update the endpoint to match the frontend request
-router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
+router.get('/', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     const reports = await Report.find({ status: 'pending' }) // Only pending reports
       .populate('user', 'username profileImage')
@@ -23,7 +23,7 @@ router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
 });
 
 // Fix the report detail endpoint
-router.get('/reports/:id', isAuthenticated, isSupervisor, async (req, res) => {
+router.get('/:id', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     const report = await Report.findById(req.params.id)
       .populate('user', 'username profileImage');
@@ -42,7 +42,7 @@ router.get('/reports/:id', isAuthenticated, isSupervisor, async (req, res) => {
 });
 
 // Updated to plural path
-router.put('/reports/:id/resolve', isAuthenticated, isSupervisor, async (req, res) => {
+router.put('/:id/resolve', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     const { image, location, status } = req.body;
     const reportId = req.params.id;
