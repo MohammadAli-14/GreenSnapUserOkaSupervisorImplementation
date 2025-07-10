@@ -39,8 +39,14 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
     if (user.tokenVersion !== tokenVersion) {
       return next(new ErrorHandler("Session expired. Please login again.", 401));
     }
+
+    // Special handling for supervisor routes
+    if (user.role === 'supervisor' && req.originalUrl.startsWith('/api/supervisor')) {
+      req.user = user;
+      return next();
+    }
     
-    // Attach user to request
+    // Attach user to request for all other routes
     req.user = user;
     next();
     
@@ -57,7 +63,7 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Authentication failed. Please login again.", 401));
   }
 });
-// Update isSupervisor middleware
+
 export const isSupervisor = (req, res, next) => {
   if (req.user.role !== 'supervisor') {
     return res.status(403).json({

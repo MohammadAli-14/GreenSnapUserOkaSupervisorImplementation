@@ -175,6 +175,7 @@ router.post('/', isAuthenticated, async (req, res) => {
         type: 'Point',
         coordinates: [parseFloat(longitude), parseFloat(latitude)]
       },
+       status: 'pending', // Explicitly set status
       photoTimestamp: photoTimestamp ? new Date(photoTimestamp) : new Date(),
       user: req.user._id
     });

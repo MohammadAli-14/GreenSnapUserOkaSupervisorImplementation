@@ -6,10 +6,13 @@ import cloudinary from '../lib/cloudinary.js';
 const router = express.Router();
 
 // Standardized to plural "reports"
+// Update GET /reports endpoint
 router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     const { status } = req.query;
-    const filter = status ? { status } : { status: 'pending' };
+    const filter = status 
+      ? { status } 
+      : { status: 'pending', resolvedBy: { $exists: false } }; // Only unresolved reports
     
     const reports = await Report.find(filter)
       .populate('user', 'username profileImage')
@@ -17,7 +20,11 @@ router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
     
     res.status(200).json(reports);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch reports", error: error.message });
+    console.error("Supervisor report fetch error:", error);
+    res.status(500).json({ 
+      message: "Failed to fetch reports", 
+      error: error.message 
+    });
   }
 });
 
