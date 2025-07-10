@@ -63,6 +63,12 @@ app.use("/api/report", reportLimiter, reportRoutes); // Rate limiter applied
 app.use("/api/users", userRoutes);
 app.use("/api/classify", classifyRoutes);
 app.use("/api/supervisor", supervisorRoutes);
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route not found: ${req.originalUrl}`
+  });
+});
 
 removeUnverifiedAccounts(); // Schedule task to remove unverified accounts
 // Start server
