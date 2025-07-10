@@ -5,16 +5,10 @@ import cloudinary from '../lib/cloudinary.js';
 
 const router = express.Router();
 
-// Standardized to plural "reports"
-// Update GET /reports endpoint
+// Update the endpoint to match the frontend request
 router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
   try {
-    const { status } = req.query;
-    const filter = status 
-      ? { status } 
-      : { status: 'pending', resolvedBy: { $exists: false } }; // Only unresolved reports
-    
-    const reports = await Report.find(filter)
+    const reports = await Report.find({ status: 'pending' }) // Only pending reports
       .populate('user', 'username profileImage')
       .sort({ createdAt: -1 });
     
@@ -28,7 +22,7 @@ router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
   }
 });
 
-// Updated to plural path
+// Fix the report detail endpoint
 router.get('/reports/:id', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     const report = await Report.findById(req.params.id)
@@ -40,7 +34,10 @@ router.get('/reports/:id', isAuthenticated, isSupervisor, async (req, res) => {
     
     res.status(200).json(report);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch report", error: error.message });
+    res.status(500).json({ 
+      message: "Failed to fetch report", 
+      error: error.message 
+    });
   }
 });
 
