@@ -118,15 +118,14 @@ userSchema.methods.generateToken = function() {
   return jwt.sign(
     { 
       userId: this._id,
-      verified: this.accountVerified, // Consistent naming
+      accountVerified: this.accountVerified,
       tokenVersion: this.tokenVersion,
-      role: this.role
+      role: this.role // Ensure role is included
     },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRE }
   );
 };
-
 // Generate password reset OTP
 userSchema.methods.generateResetOTP = function() {
   // Generate a 5-digit OTP

@@ -64,7 +64,7 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
   }
 });
 
-// ADD role verification
+// Update isSupervisor middleware
 export const isSupervisor = (req, res, next) => {
   if (req.user?.role !== 'supervisor') {
     return res.status(403).json({
