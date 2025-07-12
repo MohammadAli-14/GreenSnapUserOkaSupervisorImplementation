@@ -63,17 +63,17 @@ router.post('/', isAuthenticated, async (req, res) => {
       }
       
       // Validate coordinate ranges
-      // if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-      //   return res.status(400).json({
-      //     message: 'Coordinates out of valid range',
-      //     code: 'INVALID_COORDINATES_RANGE',
-      //     details: {
-      //       validLatitudeRange: '[-90, 90]',
-      //       validLongitudeRange: '[-180, 180]',
-      //       received: { latitude: lat, longitude: lon }
-      //     }
-      //   });
-      // }
+      if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+        return res.status(400).json({
+          message: 'Coordinates out of valid range',
+          code: 'INVALID_COORDINATES_RANGE',
+          details: {
+            validLatitudeRange: '[-90, 90]',
+            validLongitudeRange: '[-180, 180]',
+            received: { latitude: lat, longitude: lon }
+          }
+        });
+      }
     }
 
     if (missingFields.length > 0) {
@@ -162,23 +162,28 @@ router.post('/', isAuthenticated, async (req, res) => {
       });
     }
 
-    // Create report in DB
-    const finalReportType = reportType || 'standard';
-    const newReport = new Report({
-      title: title.trim(),
-      image: uploadResponse.secure_url,
-      publicId: uploadResponse.public_id,
-      details: details.trim(),
-      address: address.trim(),
-      reportType: finalReportType,
-      location: {
-        type: 'Point',
-        coordinates: [parseFloat(longitude), parseFloat(latitude)]
-      },
-       status: 'pending', // Explicitly set status
-      photoTimestamp: photoTimestamp ? new Date(photoTimestamp) : new Date(),
-      user: req.user._id
-    });
+   // Create report in DB
+const finalReportType = reportType || 'standard';
+const newReport = new Report({
+  title: title.trim(),
+  image: uploadResponse.secure_url,
+  publicId: uploadResponse.public_id,
+  details: details.trim(),
+  address: address.trim(),
+  reportType: finalReportType,
+  location: {
+    type: 'Point',
+    coordinates: [parseFloat(longitude), parseFloat(latitude)]
+  },
+  // Add resolutionLocation with default values
+  resolutionLocation: {
+    type: 'Point',  // Required field
+    coordinates: [parseFloat(longitude), parseFloat(latitude)]  // Default to report location
+  },
+  status: 'pending',
+  photoTimestamp: photoTimestamp ? new Date(photoTimestamp) : new Date(),
+  user: req.user._id
+});
     const savedReport = await newReport.save();
 
     // Update user points

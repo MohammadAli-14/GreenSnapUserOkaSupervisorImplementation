@@ -68,14 +68,14 @@ resolutionPublicId: String,
 resolutionLocation: {
   type: {
     type: String,
-    enum: ['Point'],
-    required: true
+    default: 'Point',
+    enum: ['Point']
   },
   coordinates: {
     type: [Number],
-    required: true
+    default: [0, 0]
   }
-}
+},
   }, {
     timestamps: true
   });
