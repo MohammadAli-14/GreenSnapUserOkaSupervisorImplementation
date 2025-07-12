@@ -5,10 +5,11 @@ import cloudinary from '../lib/cloudinary.js';
 
 const router = express.Router();
 
-// Update the endpoint to match the frontend request
-router.get('/', isAuthenticated, isSupervisor, async (req, res) => {
+// 1. Changed endpoint to '/reports' for fetching pending reports
+// Now accessible at GET /api/supervisor/reports
+router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
   try {
-    const reports = await Report.find({ status: 'pending' }) // Only pending reports
+    const reports = await Report.find({ status: 'pending' })
       .populate('user', 'username profileImage')
       .sort({ createdAt: -1 });
     
@@ -22,8 +23,9 @@ router.get('/', isAuthenticated, isSupervisor, async (req, res) => {
   }
 });
 
-// Fix the report detail endpoint
-router.get('/:id', isAuthenticated, isSupervisor, async (req, res) => {
+// 2. Changed endpoint to '/reports/:id' for fetching a single report
+// Now accessible at GET /api/supervisor/reports/:id
+router.get('/reports/:id', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     const report = await Report.findById(req.params.id)
       .populate('user', 'username profileImage');
@@ -41,13 +43,13 @@ router.get('/:id', isAuthenticated, isSupervisor, async (req, res) => {
   }
 });
 
-// Updated to plural path
-router.put('/:id/resolve', isAuthenticated, isSupervisor, async (req, res) => {
+// 3. Changed endpoint to '/reports/:id/resolve' for resolving reports
+// Now accessible at PUT /api/supervisor/reports/:id/resolve
+router.put('/reports/:id/resolve', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     const { image, location, status } = req.body;
     const reportId = req.params.id;
     
-    // Upload resolution image
     const uploaded = await cloudinary.uploader.upload(image, {
       folder: 'resolutions'
     });
