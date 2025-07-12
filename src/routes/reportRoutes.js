@@ -63,17 +63,17 @@ router.post('/', isAuthenticated, async (req, res) => {
       }
       
       // Validate coordinate ranges
-      if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-        return res.status(400).json({
-          message: 'Coordinates out of valid range',
-          code: 'INVALID_COORDINATES_RANGE',
-          details: {
-            validLatitudeRange: '[-90, 90]',
-            validLongitudeRange: '[-180, 180]',
-            received: { latitude: lat, longitude: lon }
-          }
-        });
-      }
+      // if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+      //   return res.status(400).json({
+      //     message: 'Coordinates out of valid range',
+      //     code: 'INVALID_COORDINATES_RANGE',
+      //     details: {
+      //       validLatitudeRange: '[-90, 90]',
+      //       validLongitudeRange: '[-180, 180]',
+      //       received: { latitude: lat, longitude: lon }
+      //     }
+      //   });
+      // }
     }
 
     if (missingFields.length > 0) {
