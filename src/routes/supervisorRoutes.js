@@ -7,16 +7,22 @@ const router = express.Router();
 
 // 1. Changed endpoint to '/reports' for fetching pending reports
 // Now accessible at GET /api/supervisor/reports
+// routes/supervisorRoutes.js
 router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     const reports = await Report.find({ status: 'pending' })
       .populate('user', 'username profileImage')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean(); // Add lean() for better performance
+    
+    // Add simple debug info
+    console.log(`Found ${reports.length} pending reports for supervisor`);
     
     res.status(200).json(reports);
   } catch (error) {
     console.error("Supervisor report fetch error:", error);
     res.status(500).json({ 
+      success: false,
       message: "Failed to fetch reports", 
       error: error.message 
     });
