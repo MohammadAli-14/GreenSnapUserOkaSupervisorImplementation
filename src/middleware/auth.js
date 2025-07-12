@@ -64,8 +64,9 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
   }
 });
 
+// ADD role verification
 export const isSupervisor = (req, res, next) => {
-  if (req.user.role !== 'supervisor') {
+  if (req.user?.role !== 'supervisor') {
     return res.status(403).json({
       success: false,
       message: "Unauthorized supervisor access"
