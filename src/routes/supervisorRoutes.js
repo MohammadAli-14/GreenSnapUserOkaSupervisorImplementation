@@ -10,13 +10,14 @@ const router = express.Router();
 // routes/supervisorRoutes.js
 router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
   try {
+    console.log(`Fetching reports for supervisor: ${req.user.email}`);
+    
     const reports = await Report.find({ status: 'pending' })
       .populate('user', 'username profileImage')
       .sort({ createdAt: -1 })
-      .lean(); // Add lean() for better performance
+      .lean();
     
-    // Add simple debug info
-    console.log(`Found ${reports.length} pending reports for supervisor`);
+    console.log(`Found ${reports.length} pending reports`);
     
     res.status(200).json(reports);
   } catch (error) {
@@ -28,7 +29,15 @@ router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
     });
   }
 });
-
+// Add this to routes/supervisorRoutes.js
+router.get('/test', isAuthenticated, isSupervisor, (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Supervisor route is working",
+    user: req.user.email,
+    role: req.user.role
+  });
+});
 // 2. Changed endpoint to '/reports/:id' for fetching a single report
 // Now accessible at GET /api/supervisor/reports/:id
 router.get('/reports/:id', isAuthenticated, isSupervisor, async (req, res) => {
