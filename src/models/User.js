@@ -113,14 +113,13 @@ userSchema.methods.generateVerificationCode = function() {
   return verificationCode;
 };
 
-// ADD role to JWT payload
 userSchema.methods.generateToken = function() {
   return jwt.sign(
     { 
       userId: this._id,
-      accountVerified: this.accountVerified,
+      verified: this.accountVerified, // Rename to match frontend expectation
       tokenVersion: this.tokenVersion,
-      role: this.role // Ensure role is included
+      role: this.role
     },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRE }
