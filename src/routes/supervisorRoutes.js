@@ -29,13 +29,14 @@ router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
     });
   }
 });
-// Add this to routes/supervisorRoutes.js
-router.get('/test', isAuthenticated, isSupervisor, (req, res) => {
+router.get('/test-auth', isAuthenticated, isSupervisor, (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Supervisor route is working",
-    user: req.user.email,
-    role: req.user.role
+    user: {
+      id: req.user._id,
+      email: req.user.email,
+      role: req.user.role
+    }
   });
 });
 // 2. Changed endpoint to '/reports/:id' for fetching a single report

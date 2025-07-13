@@ -40,13 +40,9 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler("Session expired. Please login again.", 401));
     }
 
-    // Special handling for supervisor routes
-    if (user.role === 'supervisor' && req.originalUrl.startsWith('/api/supervisor')) {
-      req.user = user;
-      return next();
-    }
+    // REMOVED THE SPECIAL SUPERVISOR HANDLING BLOCK
     
-    // Attach user to request for all other routes
+    // Attach user to request for ALL routes
     req.user = user;
     next();
     
@@ -64,7 +60,7 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
   }
 });
 
-// Update isSupervisor middleware
+// Supervisor role checker remains the same
 export const isSupervisor = (req, res, next) => {
   if (req.user?.role !== 'supervisor') {
     return res.status(403).json({
