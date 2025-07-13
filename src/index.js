@@ -35,7 +35,7 @@ app.use(cookieParser()); // Parse cookies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 // Add this before other middleware
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.protocol}://${req.get('host')}${req.originalUrl}`);
   next();
 });
 

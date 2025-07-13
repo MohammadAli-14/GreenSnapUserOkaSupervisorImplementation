@@ -16,6 +16,16 @@ router.get('/test-reports', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+router.get('/test-fixed', (req, res) => {
+  res.status(200).json([{
+    _id: "fixed123",
+    title: "Fixed Report",
+    image: "https://via.placeholder.com/150",
+    details: "This report comes from the server",
+    address: "456 Server Street",
+    status: "pending"
+  }]);
+});
 
 // 1. Changed endpoint to '/reports' for fetching pending reports
 // Now accessible at GET /api/supervisor/reports
