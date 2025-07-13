@@ -4,6 +4,18 @@ import { isAuthenticated, isSupervisor } from "../middleware/auth.js";
 import cloudinary from '../lib/cloudinary.js';
 
 const router = express.Router();
+// Add this route at the top
+router.get('/test-reports', async (req, res) => {
+  try {
+    const reports = await Report.find({ status: 'pending' });
+    res.status(200).json({
+      count: reports.length,
+      sample: reports.length > 0 ? reports[0] : null
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // 1. Changed endpoint to '/reports' for fetching pending reports
 // Now accessible at GET /api/supervisor/reports
