@@ -24,12 +24,27 @@ router.get('/reports', isAuthenticated, isSupervisor, async (req, res) => {
   try {
     console.log(`Fetching reports for supervisor: ${req.user.email}`);
     
+    // Add this log to verify token
+    console.log("Token payload:", {
+      userId: req.user._id,
+      role: req.user.role
+    });
+    
     const reports = await Report.find({ status: 'pending' })
       .populate('user', 'username profileImage')
       .sort({ createdAt: -1 })
       .lean();
     
     console.log(`Found ${reports.length} pending reports`);
+    
+    // Log first report if exists
+    if (reports.length > 0) {
+      console.log("Sample report:", {
+        _id: reports[0]._id,
+        title: reports[0].title,
+        status: reports[0].status
+      });
+    }
     
     res.status(200).json(reports);
   } catch (error) {
