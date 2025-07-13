@@ -39,6 +39,14 @@ router.get('/test-auth', isAuthenticated, isSupervisor, (req, res) => {
     }
   });
 });
+// Add this route
+router.get('/test-token', isAuthenticated, isSupervisor, (req, res) => {
+  res.status(200).json({
+    success: true,
+    user: req.user.email,
+    tokenValid: true
+  });
+});
 // 2. Changed endpoint to '/reports/:id' for fetching a single report
 // Now accessible at GET /api/supervisor/reports/:id
 router.get('/reports/:id', isAuthenticated, isSupervisor, async (req, res) => {
